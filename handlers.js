@@ -8,6 +8,8 @@ export function playComputerhandler() {
   } else if (this.textContent === 'Quit Playing Computer') {
     toggleComputerPlayerValue();
     quitPlayingAgainstComputer();
+  } else {
+    console.log("Oops. something went wrong!")
   }
 }
 

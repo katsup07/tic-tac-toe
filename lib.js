@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 import {
   boxes, xScore, oScore, modalOuter, modalInner, playAgainstComputerBtn,
 } from './elements.js';
@@ -7,6 +8,7 @@ import colors from './colors.js';
 let lastMove;
 let theXandOcolor = 'rgba(86, 92, 211, 0.700)';
 let computerPlayer = false;
+let checked = false;
 /* eslint-disable max-len */
 
 function checkForWinner() {
@@ -38,18 +40,20 @@ export function closeModal() {
 }
 
 function incrementScore(boxTextContent) {
-  console.log(xScore.textContent);
+  // debugger;
+  console.log(xScore, xScore.textContent);
   let [xValue, oValue] = [+xScore.textContent, +oScore.textContent];
   if (boxTextContent === 'X') xScore.textContent = ++xValue;
   if (boxTextContent === 'O') oScore.textContent = ++oValue;
   if (boxTextContent === 'C') oScore.textContent = ++oValue;
+  checked = true;
 }
 
 export function playerMarkBox() {
   lastMove = +this.id;// convert from string to number with '+'
   this.style.color = theXandOcolor; // need to set color since may be blank
   this.textContent !== 'X' ? this.textContent = 'X' : this.textContent = 'O';
-  checkForWinner();
+  if (!checked) checkForWinner();
   if (computerPlayer) computerMarkBox();
 }
 
@@ -63,18 +67,22 @@ function computerMarkBox() {
   const randomNum = Math.floor(Math.random() * 9);// between 0 and 8
   if (!boxes[randomNum].textContent) {
     boxes[randomNum].textContent = 'C';
-    checkForWinner();// to avoid double win situations with computer unfairly getting the win
+    if (!checked) checkForWinner();// to avoid double win situations with computer unfairly getting the win
   } else {
     computerMarkBox();
   }
   boxes[randomNum].style.color = theXandOcolor;
 }
 
+function whoGoesFirst() {
+  const randomNum = Math.floor(Math.random() * 2);
+  if (randomNum === 1) computerMarkBox(); // else, player makes first move
+}
+
 export function playAgainstComputer() {
   clearBoard();
   playAgainstComputerBtn.textContent = 'Quit Playing Computer';
-  const randomNum = Math.floor(Math.random() * 2);
-  if (randomNum === 1) computerMarkBox();
+  whoGoesFirst();
 }
 
 export function quitPlayingAgainstComputer() {
@@ -85,13 +93,15 @@ export function quitPlayingAgainstComputer() {
 
 export function toggleComputerPlayerValue() {
   computerPlayer ? computerPlayer = false : computerPlayer = true;
-  console.log('here');
+  console.log(computerPlayer);
   return computerPlayer;
 }
 
 // clear and reset functions
 export function clearBoard(event) {
+  checked = false;
   boxes.forEach((box) => box.textContent = '');
+  if (computerPlayer) whoGoesFirst();
 }
 export function resetScore(event) {
   [xScore.textContent, oScore.textContent] = [0, 0];
