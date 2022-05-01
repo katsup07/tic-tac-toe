@@ -1,0 +1,36 @@
+const colors = [
+  'green',
+  'red',
+  'orange',
+  'yellow',
+  'blue',
+  'indigo',
+  'purple',
+  'violet',
+  'pink',
+  'black',
+  'grey',
+  'salmon',
+  'teal',
+  'goldenrod',
+  'palegoldenrod',
+  'cornflowerblue',
+  'white',
+  'brown',
+  'ligthcoral',
+  'lightseagreen',
+  'lightskyblue',
+  'lightgreen',
+  'slategray',
+  'lightslategray',
+  'plum',
+  'palevioletred',
+  'peru',
+  'aqua',
+  'aquamarine',
+  'indianred',
+];
+
+export default colors;
+
+
