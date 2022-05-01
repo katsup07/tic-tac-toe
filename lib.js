@@ -1,15 +1,40 @@
-/* eslint-disable no-debugger */
 import {
   boxes, xScore, oScore, modalOuter, modalInner, playAgainstComputerBtn,
 } from './elements.js';
 import colors from './colors.js';
 
+/* eslint-disable no-debugger */
 // eslint-disable-next-line import/no-mutable-exports
 let lastMove;
 let theXandOcolor = 'rgba(86, 92, 211, 0.700)';
 let computerPlayer = false;
 let checked = false;
 /* eslint-disable max-len */
+
+export function playerMarkBox() {
+  lastMove = +this.id;// convert from string to number with '+', will be needed as number when undoing last move
+  this.style.color = theXandOcolor; // need to set color since color is transparent initially
+  this.textContent !== 'X' ? this.textContent = 'X' : this.textContent = 'O';
+  if (!checked) checkForWinner();
+  if (computerPlayer) computerMarkBox();
+}
+
+function computerMarkBox() {
+  // btc is for boxesTextContent
+  const btc = boxes.map((box) => (box.textContent ? box.textContent : Math.random()));
+  // check if there is a number. If no numbers, all boxes are full of user input('X' or 'O') or computer input('C'), so return to prevent computer from continuing to check for available places infinitely
+  const value = btc.some((item) => typeof item === 'number');
+  if (value === false) return;
+  // computer checks each box randomly until it finds an an empty box to input 'C'. Calls itself over and over until finding one.
+  const randomNum = Math.floor(Math.random() * 9);// between 0 and 8
+  if (!boxes[randomNum].textContent) {
+    boxes[randomNum].textContent = 'C';
+    if (!checked) checkForWinner();
+  } else {
+    computerMarkBox();
+  }
+  boxes[randomNum].style.color = theXandOcolor;
+}
 
 function checkForWinner() {
   // btc is for boxesTextContent.
@@ -40,7 +65,6 @@ export function closeModal() {
 }
 
 function incrementScore(boxTextContent) {
-  // debugger;
   console.log(xScore, xScore.textContent);
   let [xValue, oValue] = [+xScore.textContent, +oScore.textContent];
   if (boxTextContent === 'X') xScore.textContent = ++xValue;
@@ -49,40 +73,16 @@ function incrementScore(boxTextContent) {
   checked = true;
 }
 
-export function playerMarkBox() {
-  lastMove = +this.id;// convert from string to number with '+'
-  this.style.color = theXandOcolor; // need to set color since may be blank
-  this.textContent !== 'X' ? this.textContent = 'X' : this.textContent = 'O';
-  if (!checked) checkForWinner();
-  if (computerPlayer) computerMarkBox();
-}
-
-function computerMarkBox() {
-  // btc is for boxesTextContent
-  const btc = boxes.map((box) => (box.textContent ? box.textContent : Math.random()));
-  // check if there is a number. If no numbers, all boxes are full of user input('X' or 'O') or computer input('C'), so return to prevent computer from continuing to check for available places infinitely
-  const value = btc.some((item) => typeof item === 'number');
-  if (value === false) return;
-  // computer checks each box randomly until it finds an an empty box to input 'C'. Calls itself over and over until finding one.
-  const randomNum = Math.floor(Math.random() * 9);// between 0 and 8
-  if (!boxes[randomNum].textContent) {
-    boxes[randomNum].textContent = 'C';
-    if (!checked) checkForWinner();// to avoid double win situations with computer unfairly getting the win
-  } else {
-    computerMarkBox();
-  }
-  boxes[randomNum].style.color = theXandOcolor;
-}
-
-function whoGoesFirst() {
-  const randomNum = Math.floor(Math.random() * 2);
-  if (randomNum === 1) computerMarkBox(); // else, player makes first move
-}
-
 export function playAgainstComputer() {
   clearBoard();
   playAgainstComputerBtn.textContent = 'Quit Playing Computer';
   whoGoesFirst();
+}
+
+// Randomely choose whether player or computer go first
+function whoGoesFirst() {
+  const randomNum = Math.floor(Math.random() * 2);
+  if (randomNum === 1) computerMarkBox(); // else, player makes first move
 }
 
 export function quitPlayingAgainstComputer() {
