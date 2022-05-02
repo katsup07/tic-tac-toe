@@ -2,7 +2,7 @@ import {
   boxes, clearLastMoveBtn, clearBoardBtn, changeBoardColorBtn, playAgainstComputerBtn, changeXandOcolorBtn, modalOuter, resetScoreBtn
 } from './elements.js';
 import {
-  playerMarkBox, clearLastMove, changeBoardColor, closeModal, resetScore, changeXandOcolors,
+  playerMarkBox, clearLastMove, closeModal, resetScore, ticTacToeColors
 } from './lib.js';
 import { clearBoardHandler, playComputerhandler } from './handlers.js';
 
@@ -11,8 +11,8 @@ playAgainstComputerBtn.addEventListener('click', playComputerhandler);
 
 window.addEventListener('keydown', clearBoardHandler);
 clearBoardBtn.addEventListener('click', clearBoardHandler);
-changeBoardColorBtn.addEventListener('click', changeBoardColor);
-changeXandOcolorBtn.addEventListener('click', changeXandOcolors);
+changeBoardColorBtn.addEventListener('click', ticTacToeColors.changeBoardColor);
+changeXandOcolorBtn.addEventListener('click', ticTacToeColors.changeXandOcolors);
 modalOuter.addEventListener('click', closeModal);
 clearLastMoveBtn.addEventListener('click', clearLastMove);
 window.addEventListener('keydown', clearLastMove);

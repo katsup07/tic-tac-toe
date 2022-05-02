@@ -5,18 +5,80 @@ import colors from './colors.js';
 
 /* eslint-disable no-debugger */
 // eslint-disable-next-line import/no-mutable-exports
-let lastMove;
-let theXandOcolor = 'rgba(86, 92, 211, 0.700)';
-let computerPlayer = false;
-let checked = false;
 /* eslint-disable max-len */
 
+// accesses for the closure data below
+const player = PlayerData();
+export const ticTacToeColors = ticTacToeColorData();
+
+/// ///////////////////
+// color data closure
+function ticTacToeColorData() {
+  let theXandOcolor = 'rgba(86, 92, 211, 0.700)';
+
+  function getXandOcolor() {
+    return theXandOcolor;
+  }
+
+  function changeBoardColor() {
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const boxes = document.querySelectorAll('.box');
+    boxes.forEach((box) => box.style.border = `1px solid ${color}`);
+  }
+
+  function changeXandOcolors() {
+    theXandOcolor = colors[Math.floor(Math.random() * colors.length)];
+    boxes.forEach((box) => box.style.color = theXandOcolor);
+  }
+
+  return ({ changeBoardColor, changeXandOcolors, getXandOcolor });
+}
+
+/// ///////////////
+// player data closure
+function PlayerData() {
+  let computerPlayer = false;
+  let alreadyScored = false;
+  let lastMove;
+
+  function getComputerPlayer() {
+    return computerPlayer;
+  }
+
+  function toggleComputerPlayer() {
+    computerPlayer ? computerPlayer = false : computerPlayer = true;
+    console.log(computerPlayer);
+  }
+
+  // Tells whether a point during a round has been scored already or not.
+  function getAlreadyScoredPoint() {
+    return alreadyScored;
+  }
+
+  function setAlreadyScoredPoint(value) {
+    alreadyScored = value;
+  }
+
+  function getLastMove() {
+    return lastMove;
+  }
+
+  function setLastMove(value) {
+    lastMove = value;
+  }
+
+  return ({
+    getComputerPlayer, toggleComputerPlayer, getAlreadyScoredPoint, setAlreadyScoredPoint, setLastMove, getLastMove,
+  });
+}
+
+/// /////
 export function playerMarkBox() {
-  lastMove = +this.id;// convert from string to number with '+', will be needed as number when undoing last move
-  this.style.color = theXandOcolor; // need to set color since color is transparent initially
+  player.setLastMove(+this.id);// convert from string to number with '+', will be needed as number when undoing last move
+  this.style.color = ticTacToeColors.getXandOcolor(); // need to set color since color is transparent initially
   this.textContent !== 'X' ? this.textContent = 'X' : this.textContent = 'O';
-  if (!checked) checkForWinner();
-  if (computerPlayer) computerMarkBox();
+  if (!player.getAlreadyScoredPoint()) checkForWinner();
+  if (player.getComputerPlayer()) computerMarkBox();
 }
 
 function computerMarkBox() {
@@ -29,11 +91,11 @@ function computerMarkBox() {
   const randomNum = Math.floor(Math.random() * 9);// between 0 and 8
   if (!boxes[randomNum].textContent) {
     boxes[randomNum].textContent = 'C';
-    if (!checked) checkForWinner();
+    if (!player.getAlreadyScoredPoint()) checkForWinner();
   } else {
     computerMarkBox();
   }
-  boxes[randomNum].style.color = theXandOcolor;
+  boxes[randomNum].style.color = ticTacToeColors.getXandOcolor();
 }
 
 function checkForWinner() {
@@ -70,17 +132,17 @@ function incrementScore(boxTextContent) {
   if (boxTextContent === 'X') xScore.textContent = ++xValue;
   if (boxTextContent === 'O') oScore.textContent = ++oValue;
   if (boxTextContent === 'C') oScore.textContent = ++oValue;
-  checked = true;
+  player.setAlreadyScoredPoint(true);
 }
 
 export function playAgainstComputer() {
   clearBoard();
   playAgainstComputerBtn.textContent = 'Quit Playing Computer';
-  whoGoesFirst();
+  decideWhoGoesFirst();
 }
 
-// Randomely choose whether player or computer go first
-function whoGoesFirst() {
+// Randomly choose whether player or computer go first
+function decideWhoGoesFirst() {
   const randomNum = Math.floor(Math.random() * 2);
   if (randomNum === 1) computerMarkBox(); // else, player makes first move
 }
@@ -92,16 +154,14 @@ export function quitPlayingAgainstComputer() {
 }
 
 export function toggleComputerPlayerValue() {
-  computerPlayer ? computerPlayer = false : computerPlayer = true;
-  console.log(computerPlayer);
-  return computerPlayer;
+  player.toggleComputerPlayer(); // inside PlayerData() closure
 }
 
 // clear and reset functions
 export function clearBoard(event) {
-  checked = false;
+  player.setAlreadyScoredPoint(false);
   boxes.forEach((box) => box.textContent = '');
-  if (computerPlayer) whoGoesFirst();
+  if (player.getComputerPlayer()) decideWhoGoesFirst();
 }
 export function resetScore(event) {
   [xScore.textContent, oScore.textContent] = [0, 0];
@@ -109,20 +169,8 @@ export function resetScore(event) {
 }
 
 export function clearLastMove(event) {
-  if (!lastMove) return;
+  if (!player.getLastMove()) return;
   if (event.key === 'Backspace' || event.pointerId === 1) {
-    boxes[lastMove - 1].innerText = '';
+    boxes[player.getLastMove() - 1].innerText = '';
   }
-}
-
-// change colors of board, x, and o.
-export function changeBoardColor() {
-  const color = colors[Math.floor(Math.random() * colors.length)];
-  const boxes = document.querySelectorAll('.box');
-  boxes.forEach((box) => box.style.border = `1px solid ${color}`);
-}
-
-export function changeXandOcolors() {
-  theXandOcolor = colors[Math.floor(Math.random() * colors.length)];
-  boxes.forEach((box) => box.style.color = theXandOcolor);
 }
