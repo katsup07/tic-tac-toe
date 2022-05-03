@@ -1,19 +1,5 @@
-import { playAgainstComputer, quitPlayingAgainstComputer, clearBoard, toggleComputerPlayerValue } from './lib.js';
-/* import { computerPlayer } from './elements.js'; */
+import { nextRound } from './lib.js';
 
-export function playComputerhandler() {
-  if (this.textContent === 'Play Against Computer') {
-    toggleComputerPlayerValue();
-    playAgainstComputer();
-  } else if (this.textContent === 'Quit Playing Computer') {
-    toggleComputerPlayerValue();
-    quitPlayingAgainstComputer();
-  } else {
-    console.log("Oops. something went wrong!")
-  }
-}
-
-export function clearBoardHandler(event) {
-  if (this === 'Window') return clearBoard();
-  if (event.key === 'Escape' || event.pointerId === 1) clearBoard();
+export function nextRoundHandler(event) {
+  if (event.key === 'Escape' || event.pointerId === 1 || event.pointerId === 0 || this === 'Window') nextRound();
 }

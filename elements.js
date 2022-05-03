@@ -1,5 +1,5 @@
 export const boxes = [...document.querySelectorAll('.box')].map((box) => box);
-export const clearBoardBtn = document.querySelector('.clear-board');
+export const nextRoundBtn = document.querySelector('.next-round');
 export const clearLastMoveBtn = document.querySelector('.clear-last-move');
 export const resetScoreBtn = document.querySelector('.reset-score');
 export const changeBoardColorBtn = document.querySelector('.change-board-color');

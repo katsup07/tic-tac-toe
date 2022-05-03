@@ -1,16 +1,16 @@
 import {
-  boxes, clearLastMoveBtn, clearBoardBtn, changeBoardColorBtn, playAgainstComputerBtn, changeXandOcolorBtn, modalOuter, resetScoreBtn
+  boxes, clearLastMoveBtn, nextRoundBtn, changeBoardColorBtn, playAgainstComputerBtn, changeXandOcolorBtn, modalOuter, resetScoreBtn,
 } from './elements.js';
 import {
-  playerMarkBox, clearLastMove, closeModal, resetScore, ticTacToeColors
+  playerMarkBox, clearLastMove, closeModal, resetScore, ticTacToeColors, playAgainstComputer,
 } from './lib.js';
-import { clearBoardHandler, playComputerhandler } from './handlers.js';
+import { nextRoundHandler } from './handlers.js';
 
 boxes.forEach((box) => box.addEventListener('click', playerMarkBox));
-playAgainstComputerBtn.addEventListener('click', playComputerhandler);
+playAgainstComputerBtn.addEventListener('click', playAgainstComputer);
 
-window.addEventListener('keydown', clearBoardHandler);
-clearBoardBtn.addEventListener('click', clearBoardHandler);
+window.addEventListener('keydown', nextRoundHandler);
+nextRoundBtn.addEventListener('click', nextRoundHandler);
 changeBoardColorBtn.addEventListener('click', ticTacToeColors.changeBoardColor);
 changeXandOcolorBtn.addEventListener('click', ticTacToeColors.changeXandOcolors);
 modalOuter.addEventListener('click', closeModal);

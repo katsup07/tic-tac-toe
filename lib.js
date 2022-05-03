@@ -11,7 +11,6 @@ import colors from './colors.js';
 const player = PlayerData();
 export const ticTacToeColors = ticTacToeColorData();
 
-/// ///////////////////
 // color data closure
 function ticTacToeColorData() {
   let theXandOcolor = 'rgba(86, 92, 211, 0.700)';
@@ -34,7 +33,6 @@ function ticTacToeColorData() {
   return ({ changeBoardColor, changeXandOcolors, getXandOcolor });
 }
 
-/// ///////////////
 // player data closure
 function PlayerData() {
   let computerPlayer = false;
@@ -72,7 +70,6 @@ function PlayerData() {
   });
 }
 
-/// /////
 export function playerMarkBox() {
   player.setLastMove(+this.id);// convert from string to number with '+', will be needed as number when undoing last move
   this.style.color = ticTacToeColors.getXandOcolor(); // need to set color since color is transparent initially
@@ -84,7 +81,7 @@ export function playerMarkBox() {
 function computerMarkBox() {
   // btc is for boxesTextContent
   const btc = boxes.map((box) => (box.textContent ? box.textContent : Math.random()));
-  // check if there is a number. If no numbers, all boxes are full of user input('X' or 'O') or computer input('C'), so return to prevent computer from continuing to check for available places infinitely
+  // check if there is a number. If no numbers, all boxes are full of user input('X' or 'O') or computer input('C'), so return to prevent computer from continuing to check for empty boxes infinitely.
   const value = btc.some((item) => typeof item === 'number');
   if (value === false) return;
   // computer checks each box randomly until it finds an an empty box to input 'C'. Calls itself over and over until finding one.
@@ -135,22 +132,30 @@ function incrementScore(boxTextContent) {
   player.setAlreadyScoredPoint(true);
 }
 
+export function nextRound() {
+  player.setAlreadyScoredPoint(false);
+  clearBoard();
+  if (player.getComputerPlayer()) decideWhoGoesFirst();
+
+  // Randomly choose whether player or computer go first
+  function decideWhoGoesFirst() {
+    const randomNum = Math.floor(Math.random() * 2);
+    if (randomNum === 1) computerMarkBox(); // else, player makes first move
+  }
+}
+
 export function playAgainstComputer() {
-  clearBoard();
-  playAgainstComputerBtn.textContent = 'Quit Playing Computer';
-  decideWhoGoesFirst();
-}
-
-// Randomly choose whether player or computer go first
-function decideWhoGoesFirst() {
-  const randomNum = Math.floor(Math.random() * 2);
-  if (randomNum === 1) computerMarkBox(); // else, player makes first move
-}
-
-export function quitPlayingAgainstComputer() {
-  console.log('quit');
-  playAgainstComputerBtn.textContent = 'Play Against Computer';
-  clearBoard();
+  if (this.textContent === 'Play Against Computer') {
+    toggleComputerPlayerValue();
+    playAgainstComputerBtn.textContent = 'Quit Playing Computer';
+    nextRound();
+  } else if (this.textContent === 'Quit Playing Computer') {
+    playAgainstComputerBtn.textContent = 'Play Against Computer';
+    toggleComputerPlayerValue();
+    nextRound();
+  } else {
+    console.log('Oops. something went wrong!');
+  }
 }
 
 export function toggleComputerPlayerValue() {
@@ -159,13 +164,12 @@ export function toggleComputerPlayerValue() {
 
 // clear and reset functions
 export function clearBoard(event) {
-  player.setAlreadyScoredPoint(false);
-  boxes.forEach((box) => box.textContent = '');
-  if (player.getComputerPlayer()) decideWhoGoesFirst();
+  boxes.forEach((box) => box.textContent = null);
 }
+
 export function resetScore(event) {
   [xScore.textContent, oScore.textContent] = [0, 0];
-  clearBoard();
+  nextRound();
 }
 
 export function clearLastMove(event) {
