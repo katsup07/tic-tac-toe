@@ -5,5 +5,5 @@ Note: There is currently a small bug with firefox - the "next round" and "undo l
 ## Try it out
 https://katsup07.github.io/tic-tac-toe/
 
-## Alternatively
-Installation: download zip file, open in VS code, download live server extension, and then run with live server extension from index.html.
+## Install locally for development:
+Download zip file, open in VS code, download live server extension, and then run with live server extension from index.html.
